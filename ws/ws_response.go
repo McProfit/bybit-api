@@ -60,6 +60,15 @@ type Instrument struct {
 	IndexPrice float64 `json:"index_price"`
 }
 
+type BookTicker struct {
+	S  string `json:"s"`
+	Bp string `json:"bp"`
+	Bq string `json:"bq"`
+	Ap string `json:"ap"`
+	Aq string `json:"aq"`
+	T  int64  `json:"t"`
+}
+
 type Order struct {
 	OrderID       string       `json:"order_id"`
 	OrderLinkID   string       `json:"order_link_id"`

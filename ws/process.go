@@ -32,6 +32,10 @@ func (b *ByBitWS) processKLine(symbol string, data KLine) {
 	b.Emit(WSKLine, symbol, data)
 }
 
+func (b *ByBitWS) processTickers(symbol string, data BookTicker) {
+	b.Emit(WSBookTicker, symbol, data)
+}
+
 func (b *ByBitWS) processInsurance(currency string, data ...*Insurance) {
 	b.Emit(WSInsurance, currency, data)
 }

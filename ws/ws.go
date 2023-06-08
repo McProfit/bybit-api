@@ -7,16 +7,17 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"github.com/chuckpreslar/emission"
-	"github.com/frankrap/bybit-api/recws"
-	"github.com/gorilla/websocket"
-	"github.com/tidwall/gjson"
 	"log"
 	"net/http"
 	"net/url"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/McProfit/bybit-api/recws"
+	"github.com/chuckpreslar/emission"
+	"github.com/gorilla/websocket"
+	"github.com/tidwall/gjson"
 )
 
 const (
@@ -32,8 +33,8 @@ const (
 // wss://stream.bybit.com/realtime
 
 const (
-	HostReal    = "wss://stream.bybit.com/realtime"
-	HostTestnet = "wss://stream-testnet.bybit.com/realtime"
+	HostReal    = "wss://stream.bybit.com/spot/public/v3"
+	HostTestnet = "wss://stream-testnet.bybit.com/spot/public/v3"
 )
 
 const (
@@ -42,6 +43,7 @@ const (
 	WSTrade         = "trade"          // 实时交易: trade/trade.BTCUSD
 	WSInsurance     = "insurance"      // 每日保险基金更新: insurance
 	WSInstrument    = "instrument"     // 产品最新行情: instrument
+	WSBookTicker    = "bookticker"
 
 	WSPosition  = "position"  // 仓位变化: position
 	WSExecution = "execution" // 委托单成交信息: execution
@@ -305,6 +307,20 @@ func (b *ByBitWS) processMessage(messageType int, data []byte) {
 				return
 			}
 			b.processKLine(symbol, data)
+		} else if strings.HasPrefix(topic, WSBookTicker) {
+			topicArray := strings.Split(topic, ".")
+			if len(topicArray) != 2 {
+				return
+			}
+			symbol := topicArray[1]
+			raw := ret.Get("data").Raw
+			var data BookTicker
+			err := json.Unmarshal([]byte(raw), &data)
+			if err != nil {
+				log.Printf("BybitWs %v", err)
+				return
+			}
+			b.processTickers(symbol, data)
 		} else if strings.HasPrefix(topic, WSInsurance) {
 			// insurance.BTC
 			topicArray := strings.Split(topic, ".")

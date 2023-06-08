@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/frankrap/bybit-api/rest"
+	"github.com/McProfit/bybit-api/rest"
 	"log"
 	"net/http"
 	"net/url"

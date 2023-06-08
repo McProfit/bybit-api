@@ -1,8 +1,9 @@
 package rest_test
 
 import (
-	"github.com/frankrap/bybit-api/rest"
 	"testing"
+
+	"github.com/McProfit/bybit-api/rest"
 )
 
 func newByBit2() *rest.ByBit {
